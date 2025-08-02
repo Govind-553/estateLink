@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Real Estate Listings and Information">
+    <meta name="theme-color" content="#1e3a8a">
+    <meta name="author" content="QuadCoders Team">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="img/house.png" type="image/x-icon">
+    <title>Real Estate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="module" src="script.js"></script>
+</head>
+<body>
+       <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="img/house.png" alt="Logo">
+            <span>Real Estate</span>
+        </div>
+        
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#login"><i class="fas fa-user"></i></a></li>
+        </ul>
+        
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Advanced Search Section -->
+    <section class="search-section" id="home">
+        <div class="search-container">
+            <h2 class="search-title">Find Your Perfect Property</h2>
+            
+            <form class="search-form">
+                <!-- Location Search -->
+                <div class="search-group">
+                    <label class="search-label">Location</label>
+                    <input type="text" class="search-input" placeholder="Enter city, area, or landmark" id="location">
+                </div>
+
+                <!-- Flat Type Dropdown -->
+                <div class="search-group">
+                    <label class="search-label">Property Type</label>
+                    <div class="dropdown" id="flatType">
+                        <div class="dropdown-btn">
+                            <span>Select Type</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="dropdown-content">
+                            <div class="dropdown-option" data-value="1rk">1 RK</div>
+                            <div class="dropdown-option" data-value="1bhk">1 BHK</div>
+                            <div class="dropdown-option" data-value="2rk">2 RK</div>
+                            <div class="dropdown-option" data-value="2bhk">2 BHK</div>
+                            <div class="dropdown-option" data-value="3bhk">3 BHK</div>
+                            <div class="dropdown-option" data-value="4bhk">4+ BHK</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price Range -->
+                <div class="search-group">
+                    <label class="search-label">Budget Range</label>
+                    <div class="dropdown" id="priceRange">
+                        <div class="dropdown-btn">
+                            <span>Select Budget</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="dropdown-content">
+                            <div class="dropdown-option" data-value="0-25000">₹0 - ₹25,000</div>
+                            <div class="dropdown-option" data-value="25000-50000">₹25,000 - ₹50,000</div>
+                            <div class="dropdown-option" data-value="50000-100000">₹50,000 - ₹1,00,000</div>
+                            <div class="dropdown-option" data-value="100000-200000">₹1,00,000 - ₹2,00,000</div>
+                            <div class="dropdown-option" data-value="200000-500000">₹2,00,000 - ₹5,00,000</div>
+                            <div class="dropdown-option" data-value="500000+">₹5,00,000+</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tenant Preference -->
+                <div class="search-group">
+                    <label class="search-label">Tenant</label>
+                    <div class="dropdown" id="tenantType">
+                        <div class="dropdown-btn">
+                            <span>Select Preference</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="dropdown-content">
+                            <div class="dropdown-option" data-value="family">Family</div>
+                            <div class="dropdown-option" data-value="bachelor">Bachelor</div>
+                            <div class="dropdown-option" data-value="no-preference">No Preference</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Button -->
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i>
+                    Search
+                </button>
+            </form>
+
+            <!-- Selected Filters Display -->
+            <div class="selected-filters" id="selectedFilters"></div>
+        </div>
+    </section>
+
+    <!-- Property Listings Tables Section --> 
+    <section class="listings-section">
+        <div class="property-container">
+            <h2 class="property-title">Owner Properties</h2>
+            <table class="property-table" id="ownerPropertiesTable">
+                <thead>
+                    <tr>
+                        <th>Location</th>
+                        <th>Property Type</th>
+                        <th>Price</th>
+                        <th>Owner Name</th>
+                        <th>Contact</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="ownerPropertiesBody">
+                     <tr>
+                    <td>New York, NY</td>
+                    <td>2 RK</td>
+                    <td>$3,000</td>
+                    <td>John Doe</td>
+                    <td>(123) 456-7890</td>
+                    <td>2025-01-01</td>
+                </tr>
+                <tr>
+                    <td>Los Angeles, CA</td>
+                    <td>1 BHK</td>
+                    <td>$4,500</td>
+                    <td>Jane Smith</td>
+                    <td>(987) 654-3210</td>
+                    <td>2025-06-01</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="property-container">
+            <h2 class="property-title">Renter Properties</h2>
+            <table class="property-table" id="renterPropertiesTable">
+                <thead>
+                    <tr>
+                        <th>Location</th>
+                        <th>Property Type</th>
+                        <th>Price</th>
+                        <th>Agent Name</th>
+                        <th>Contact</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="renterPropertiesBody">
+                <tr>
+                    <td>Chicago, IL</td>
+                    <td>1 RK</td>
+                    <td>$2,500</td>
+                    <td>Emily Johnson</td>
+                    <td>(555) 123-4567</td>
+                    <td>2025-03-15</td>
+                </tr>
+                <tr>
+                    <td>Miami, FL</td>
+                    <td>2 BHK</td>
+                    <td>$1,800</td>
+                    <td>Michael Brown</td>
+                    <td>(444) 765-4321</td>
+                    <td>2025-09-01</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Footer Component -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <!-- Left Section -->
+                <div class="footer-left">
+                    <div class="footer-logo">
+                        <img src="img/house.png" alt="Logo">
+                        <span>Real Estate</span>
+                    </div>
+                    <p class="footer-description">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.
+                    </p>
+                    <div class="footer-copyright">
+                        © 2025 Real Estate. All rights reserved.
+                    </div>
+                </div>
+
+                <!-- Center Section -->
+                <div class="footer-center">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-nav">
+                        <li><a href="#home"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="#about"><i class="fas fa-info-circle"></i> About</a></li>
+                        <li><a href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                        <li><a href="#login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                    </ul>
+                </div>
+
+                <!-- Right Section -->
+                <div class="footer-right">
+                    <h3>Get In Touch</h3>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Mumbai, Maharashtra, India</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+91 98765 43210</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>info@realestate.com</span>
+                        </div>
+                    </div>
+                    
+                    <div class="social-links">
+                        <a href="#" class="social-link" title="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link" title="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link" title="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link" title="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="footer-bottom">
+                Made by Team | Privacy Policy | Terms of Service
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

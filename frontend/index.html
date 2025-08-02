@@ -6,14 +6,811 @@
     <meta name="description" content="Real Estate Listings and Information">
     <meta name="theme-color" content="#1e3a8a">
     <meta name="author" content="QuadCoders Team">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="img/house.png" type="image/x-icon">
     <title>Real Estate</title>
+    <link rel="icon" href="img/house.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script type="module" src="script.js"></script>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: #1e3a8a;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            background: transparent;
+        }
+
+        .logo span {
+            background: transparent;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+            background: transparent;
+        }
+
+        .nav-links li {
+            background: transparent;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 0.5rem;
+            background: transparent;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 2px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+
+        /* Hero Section */
+        .hero-container {
+            text-align: center;
+            padding: 150px 50px 50px;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #f0f4f8;
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-container h1 {
+            font-size: 54px;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            font-weight: bold;
+            background: transparent;
+        }
+
+        .hero-container p {
+            font-size: 24px;
+            color: #4b5563;
+            margin-bottom: 30px;
+            line-height: 1.5;
+            background: transparent;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            background: transparent;
+        }
+
+.rent-btn, .buy-btn {
+   padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-height: 50px;
+}
+
+.rent-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(30, 58, 138, 0.3);
+}
+
+.buy-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(30, 58, 138, 0.3);
+}
+
+.rent-btn:active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+.buy-btn:active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+        /* About and Contact Sections */
+        .section-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            font-family: Arial, sans-serif;
+            background: transparent;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #333;
+            position: relative;
+            background: transparent;
+        }
+
+        .section-title::after {
+            content: '';
+            width: 80px;
+            height: 3px;
+            background-color: #007bff;
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .two-column-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: start;
+            background: transparent;
+        }
+
+        .about-section {
+            background-color: #f8f9fa;
+            padding: 80px 0;
+        }
+
+        .contact-section {
+            background-color: #ffffff;
+            padding: 80px 0;
+        }
+
+        .column {
+            padding: 20px;
+            background: transparent;
+        }
+
+        .column h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+            font-weight: 600;
+            background: transparent;
+        }
+
+        .column p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 20px;
+            background: transparent;
+        }
+
+        .contact-info {
+            margin-bottom: 30px;
+            background: transparent;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 0;
+            background: transparent;
+        }
+
+        .contact-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            color: #007bff;
+            font-weight: bold;
+            background: transparent;
+        }
+
+        .contact-details {
+            flex: 1;
+            background: transparent;
+        }
+
+        .contact-label {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: transparent;
+        }
+
+        .contact-value {
+            color: #666;
+            font-size: 16px;
+            margin-top: 2px;
+            background: transparent;
+        }
+
+        .contact-form {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .contact-form h3 {
+            background: transparent;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            background: transparent;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            background: transparent;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+            background: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            background: white;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+            background: transparent;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #007bff;
+            display: block;
+            background: transparent;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 5px;
+            background: transparent;
+        }
+
+        .team-member {
+            text-align: center;
+            margin-bottom: 30px;
+            background: transparent;
+        }
+
+        .member-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #007bff;
+        }
+
+        .member-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            background: transparent;
+        }
+
+        .member-title {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: transparent;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer * {
+            background: transparent;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: transparent;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 2rem;
+            background: transparent;
+        }
+
+        .footer-left {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: transparent;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: transparent;
+        }
+
+        .footer-logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .footer-description {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            background: transparent;
+        }
+
+        .footer-copyright {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+            background: transparent;
+        }
+
+        .footer-center h3,
+        .footer-right h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: white;
+            background: transparent;
+        }
+
+        .footer-nav {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            background: transparent;
+        }
+
+        .footer-nav li {
+            background: transparent;
+        }
+
+        .footer-nav a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0;
+            background: transparent;
+        }
+
+        .footer-nav a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .footer-nav a i {
+            font-size: 0.875rem;
+            width: 16px;
+            background: transparent;
+        }
+
+        .footer .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: transparent;
+        }
+
+        .footer .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            background: transparent;
+            margin-bottom: 0;
+            padding: 0;
+        }
+
+        .footer .contact-item i {
+            width: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            background: transparent;
+        }
+
+        .footer .contact-item span {
+            background: transparent;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            background: transparent;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-link i {
+            background: transparent;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 1.5rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+            background: transparent;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #1e3a8a;
+                flex-direction: column;
+                padding: 1rem 0;
+                gap: 20px;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hero-container {
+                padding: 120px 20px 50px;
+            }
+
+            .hero-container h1 {
+                font-size: 36px;
+            }
+
+            .hero-container p {
+                font-size: 18px;
+            }
+
+            .buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .two-column-layout {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .section-title {
+                font-size: 28px;
+                margin-bottom: 30px;
+            }
+
+            .about-section,
+            .contact-section {
+                padding: 40px 0;
+            }
+
+            .column {
+                padding: 15px;
+            }
+
+            .contact-form {
+                padding: 20px;
+            }
+
+            .about-stats {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .stat-item {
+                padding: 15px;
+            }
+
+            .member-photo {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+
+            .footer {
+                padding: 2rem 1rem 1rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+
+            .footer-left {
+                align-items: center;
+                text-align: center;
+            }
+
+            .footer-nav {
+                align-items: center;
+            }
+
+            .footer-nav a:hover {
+                transform: none;
+            }
+
+            .footer .contact-info {
+                align-items: center;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-container h1 {
+                font-size: 28px;
+            }
+
+            .hero-container p {
+                font-size: 16px;
+            }
+
+            .section-container {
+                margin: 20px auto;
+                padding: 0 10px;
+            }
+
+            .section-title {
+                font-size: 24px;
+                margin-bottom: 25px;
+            }
+
+            .section-title::after {
+                width: 60px;
+                height: 2px;
+            }
+
+            .about-section,
+            .contact-section {
+                padding: 30px 0;
+            }
+
+            .column {
+                padding: 10px;
+            }
+
+            .column h3 {
+                font-size: 20px;
+            }
+
+            .contact-form {
+                padding: 15px;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            .submit-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .stat-number {
+                font-size: 24px;
+            }
+
+            .stat-label {
+                font-size: 12px;
+            }
+
+            .member-photo {
+                width: 80px;
+                height: 80px;
+                font-size: 32px;
+            }
+
+            .member-name {
+                font-size: 16px;
+            }
+
+            .member-title {
+                font-size: 12px;
+            }
+
+            .footer-content {
+                gap: 1.5rem;
+            }
+
+            .footer-logo {
+                font-size: 1.25rem;
+            }
+
+            .social-link {
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
 </head>
 <body>
-       <!-- Navbar -->
     <nav class="navbar">
         <div class="logo">
             <img src="img/house.png" alt="Logo">
@@ -27,163 +824,24 @@
             <li><a href="#login"><i class="fas fa-user"></i></a></li>
         </ul>
         
-        <div class="hamburger">
+        <div class="hamburger" onclick="toggleMenu()">
             <span></span>
             <span></span>
             <span></span>
         </div>
     </nav>
 
-    <!-- Advanced Search Section -->
-    <section class="search-section" id="home">
-        <div class="search-container">
-            <h2 class="search-title">Find Your Perfect Property</h2>
-            
-            <form class="search-form">
-                <!-- Location Search -->
-                <div class="search-group">
-                    <label class="search-label">Location</label>
-                    <input type="text" class="search-input" placeholder="Enter city, area, or landmark" id="location">
-                </div>
+    <div class="hero-container" id="home">
+        <h1>Welcome to Real Estate</h1>
+        <p>Your one-stop solution for renting and selling properties.</p>
+        <div class="buttons">
+            <button class="rent-btn" onclick="location.href='../frontend/home.html'">Rent</button>
+            <button class="buy-btn" onclick="location.href='../frontend/home.html'">Sell</button>
 
-                <!-- Flat Type Dropdown -->
-                <div class="search-group">
-                    <label class="search-label">Property Type</label>
-                    <div class="dropdown" id="flatType">
-                        <div class="dropdown-btn">
-                            <span>Select Type</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="dropdown-content">
-                            <div class="dropdown-option" data-value="1rk">1 RK</div>
-                            <div class="dropdown-option" data-value="1bhk">1 BHK</div>
-                            <div class="dropdown-option" data-value="2rk">2 RK</div>
-                            <div class="dropdown-option" data-value="2bhk">2 BHK</div>
-                            <div class="dropdown-option" data-value="3bhk">3 BHK</div>
-                            <div class="dropdown-option" data-value="4bhk">4+ BHK</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Price Range -->
-                <div class="search-group">
-                    <label class="search-label">Budget Range</label>
-                    <div class="dropdown" id="priceRange">
-                        <div class="dropdown-btn">
-                            <span>Select Budget</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="dropdown-content">
-                            <div class="dropdown-option" data-value="0-25000">₹0 - ₹25,000</div>
-                            <div class="dropdown-option" data-value="25000-50000">₹25,000 - ₹50,000</div>
-                            <div class="dropdown-option" data-value="50000-100000">₹50,000 - ₹1,00,000</div>
-                            <div class="dropdown-option" data-value="100000-200000">₹1,00,000 - ₹2,00,000</div>
-                            <div class="dropdown-option" data-value="200000-500000">₹2,00,000 - ₹5,00,000</div>
-                            <div class="dropdown-option" data-value="500000+">₹5,00,000+</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tenant Preference -->
-                <div class="search-group">
-                    <label class="search-label">Tenant</label>
-                    <div class="dropdown" id="tenantType">
-                        <div class="dropdown-btn">
-                            <span>Select Preference</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="dropdown-content">
-                            <div class="dropdown-option" data-value="family">Family</div>
-                            <div class="dropdown-option" data-value="bachelor">Bachelor</div>
-                            <div class="dropdown-option" data-value="no-preference">No Preference</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Search Button -->
-                <button type="submit" class="search-btn">
-                    <i class="fas fa-search"></i>
-                    Search
-                </button>
-            </form>
-
-            <!-- Selected Filters Display -->
-            <div class="selected-filters" id="selectedFilters"></div>
         </div>
-    </section>
+    </div>
 
-    <!-- Property Listings Tables Section --> 
-    <section class="listings-section">
-        <div class="property-container">
-            <h2 class="property-title">Owner Properties</h2>
-            <table class="property-table" id="ownerPropertiesTable">
-                <thead>
-                    <tr>
-                        <th>Location</th>
-                        <th>Property Type</th>
-                        <th>Price</th>
-                        <th>Owner Name</th>
-                        <th>Contact</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody id="ownerPropertiesBody">
-                     <tr>
-                    <td>New York, NY</td>
-                    <td>2 RK</td>
-                    <td>$3,000</td>
-                    <td>John Doe</td>
-                    <td>(123) 456-7890</td>
-                    <td>2025-01-01</td>
-                </tr>
-                <tr>
-                    <td>Los Angeles, CA</td>
-                    <td>1 BHK</td>
-                    <td>$4,500</td>
-                    <td>Jane Smith</td>
-                    <td>(987) 654-3210</td>
-                    <td>2025-06-01</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="property-container">
-            <h2 class="property-title">Renter Properties</h2>
-            <table class="property-table" id="renterPropertiesTable">
-                <thead>
-                    <tr>
-                        <th>Location</th>
-                        <th>Property Type</th>
-                        <th>Price</th>
-                        <th>Agent Name</th>
-                        <th>Contact</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody id="renterPropertiesBody">
-                <tr>
-                    <td>Chicago, IL</td>
-                    <td>1 RK</td>
-                    <td>$2,500</td>
-                    <td>Emily Johnson</td>
-                    <td>(555) 123-4567</td>
-                    <td>2025-03-15</td>
-                </tr>
-                <tr>
-                    <td>Miami, FL</td>
-                    <td>2 BHK</td>
-                    <td>$1,800</td>
-                    <td>Michael Brown</td>
-                    <td>(444) 765-4321</td>
-                    <td>2025-09-01</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
-    
-     <!-- About Section -->
+    <!-- About Section -->
     <section class="about-section" id="about">
         <div class="section-container">
             <h2 class="section-title">About Us</h2>
@@ -280,7 +938,7 @@
                 <div class="column">
                     <div class="contact-form">
                         <h3>Send us a Message</h3>
-                        <form>
+                        <form onsubmit="handleSubmit(event)">
                             <div class="form-group">
                                 <label for="name">Full Name *</label>
                                 <input type="text" id="name" name="name" required>
@@ -325,7 +983,7 @@
                         <span>Real Estate</span>
                     </div>
                     <p class="footer-description">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.
+                        Your trusted partner in finding the perfect property. We combine years of experience with modern technology to help you buy, sell, or rent with confidence.
                     </p>
                     <div class="footer-copyright">
                         © 2025 Real Estate. All rights reserved.
@@ -384,5 +1042,17 @@
             </div>
         </div>
     </footer>
+    <script>
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            alert('Thank you for your message!');
+            document.querySelector('.contact-form form').reset();
+        }
+        </script>
 </body>
-</html>
+</html>        
