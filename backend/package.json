@@ -4,7 +4,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "nodemon": "nodemon server.js"
+    "nodemon": "nodemon server.js",
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "QuadCoders team",
