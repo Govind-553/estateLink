@@ -8,7 +8,7 @@ const router = express.Router();
 // Route 1 - Create a new rent listing
 export const createRentListing = async (req, res) => {
     const { contact } = req.params;
-    const rentData = req.body;
+    let rentData = req.body;
     rentData = { ...rentData, createdAt: new Date() };
 
     try {
@@ -29,7 +29,8 @@ export const createRentListing = async (req, res) => {
         const newListing = new RentFlat({
             ...rentData,
             contact,
-            userId: User._id,
+            userId: user._id,
+            userName: user.fullName,
         });
 
         const savedListing = await newListing.save();
@@ -39,10 +40,19 @@ export const createRentListing = async (req, res) => {
             listing: savedListing,
         });
 
-    } catch (error) {
-        console.error("Error creating rent listing:", error.message);
-        res.status(500).json({ message: "Server error while creating rent listing." });
-    }
+        } catch (error) {
+        console.error("Error creating rent listing:");
+        console.error("Message:", error.message);
+        console.error("Stack:", error.stack);
+        if (error.errors) {
+        console.error("Validation Errors:", error.errors);
+        }
+        if (error.code) {
+        console.error("MongoDB Error Code:", error.code);
+     }
+
+    res.status(500).json({ message: "Server error while creating rent listing." });
+}  
 };
 
 

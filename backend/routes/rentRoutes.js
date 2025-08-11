@@ -1,5 +1,5 @@
 import express from "express";
-import createRentListing from "../controllers/rentController.js";
+import{ createRentListing } from "../controllers/rentController.js";
 const router = express.Router();
 
 //Route 1 - Create a new rent listing

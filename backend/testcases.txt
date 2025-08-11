@@ -1,10 +1,7 @@
-//Create rentFlats
+//Create rentFlats - http://localhost:3000/api/rentflats/create/1455455890(use contact number from MongoDB)
 {
-  "location": "Borivali",
-  "price": 15000,
-  "description": "2BHK near station",
-  "amenities": ["Lift", "Parking", "Security"],
-  "furnished": true
+  "location": "Borivali East",
+  "price": 18000
 }
 
 
