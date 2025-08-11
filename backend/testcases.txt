@@ -1,0 +1,10 @@
+//Create rentFlats
+{
+  "location": "Borivali",
+  "price": 15000,
+  "description": "2BHK near station",
+  "amenities": ["Lift", "Parking", "Security"],
+  "furnished": true
+}
+
+
