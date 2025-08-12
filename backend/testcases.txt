@@ -1,7 +1,32 @@
-//Create rentFlats - http://localhost:3000/api/rentflats/create/1455455890(use contact number from MongoDB)
+create user - POST http://localhost:3000/api/users/create
 {
-  "location": "Borivali East",
+  "fullName": "Ravi Sharma",
+  "mobileNumber": "1455455891",
+  "password": "abcdef"
+}
+
+Create Rent Listing - POST /api/rentflats/create/1455455891
+{
+  "location": "Borivali",
   "price": 18000
 }
+
+Get All Listing - GET /api/rentflats/all
+
+Get Listings by Contact - GET /api/rentflats/by-contact/1455455892
+
+Update Listings by Contact - PUT /api/rentflats/update/:contact
+{
+  "location": "Andheri East",
+  "price": 22000
+}
+
+Delete Listings by Contact - DELETE /api/rentflats/delete/1455455893
+
+
+
+
+
+
 
 
