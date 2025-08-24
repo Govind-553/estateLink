@@ -8,6 +8,7 @@ import { generateRefreshToken, generateAccessToken, sendTokenResponse } from './
 export const registerUser = async (req, res) => {
     const { fullName, contact, password } = req.body;
 
+
     try{
     // --- Basic Validation ---
     if (!fullName || !contact || !password) {
@@ -66,11 +67,11 @@ export const loginUser = async (req, res) => {
         }
         
         //mobileNumber length restriction
-        if (mobileNumber.length !== 10) {
-            return res.status(400).json({
-                message: "mobile Number should be of only 10 digit"
-            });
-        }
+        // if (mobileNumber.length !== 10) {
+        //     return res.status(400).json({
+        //         message: "mobile Number should be of only 10 digit"
+        //     });
+        // }
 
         // Password length check
         if (password.length < 6) {

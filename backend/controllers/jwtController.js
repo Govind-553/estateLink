@@ -1,23 +1,23 @@
 import jwt from 'jsonwebtoken';
 
 //generate access token 
-export const generateAccessToken = (userId, mobileNumber) => {
-    return jwt.sign({ userId, mobileNumber }, process.env.JWT_ACCESS_TOKEN_SECRET, { 
+export const generateAccessToken = (mobileNumber) => {
+    return jwt.sign({ mobileNumber }, process.env.JWT_ACCESS_TOKEN_SECRET, { 
         expiresIn: '15m' 
     });
 };
 
 //generate refresh token
-export const generateRefreshToken = (userId, mobileNumber) => {
-    return jwt.sign({ userId, mobileNumber }, process.env.JWT_REFRESH_TOKEN_SECRET, { 
+export const generateRefreshToken = (mobileNumber) => {
+    return jwt.sign({ mobileNumber }, process.env.JWT_REFRESH_TOKEN_SECRET, { 
         expiresIn: '7d' 
     });
 };
 
 //Function to Call Generate Tokens & Send Cookie
-export const sendTokenResponse = (res, userId, mobileNumber) => {
-    const accessToken = generateAccessToken(userId, mobileNumber);
-    const refreshToken = generateRefreshToken(userId, mobileNumber);
+export const sendTokenResponse = (res, mobileNumber) => {
+    const accessToken = generateAccessToken(mobileNumber);
+    const refreshToken = generateRefreshToken(mobileNumber);
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',

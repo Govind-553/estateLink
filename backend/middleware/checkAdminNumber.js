@@ -1,14 +1,16 @@
 
 // middleware/checkAdminNumber.js
 export const checkAdminNumber = (req, res, next) => {
+  const mobileNumber = Number(req.mobileNumber); // Ensure it's a number
+
   try {
-    // Ensure mobile number is attached from verifyAccessToken
-    // if (!req.mobileNumber) {
-    //   return res.status(401).json({ message: "Unauthorized: User mobile number missing" });
-    // }
+    // Ensure phone number is attached from verifyAccessToken
+    if (!mobileNumber) {
+      return res.status(401).json({ message: "Unauthorized: User phone number missing" });
+    }
 
     // Admin number from environment variable
-    const ADMIN_NUMBER = process.env.ADMIN_NUMBER;
+    const ADMIN_NUMBER = Number(process.env.ADMIN_NUMBER);
 
     if (!ADMIN_NUMBER) {
       console.error("ADMIN_NUMBER not set in .env file");
@@ -16,7 +18,7 @@ export const checkAdminNumber = (req, res, next) => {
     }
 
     // Check if logged-in user is the admin number
-    if (req.mobileNumber !== ADMIN_NUMBER) {
+    if (mobileNumber !== ADMIN_NUMBER) {
       return res.status(403).json({ message: "Access denied: Admin only" });
     }
 

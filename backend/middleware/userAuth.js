@@ -21,10 +21,10 @@ export const verifyAccessToken = (req, res, next) => {
       });
     }
 
-    req.userId = decoded.userId;
+   // req.userId = decoded.userId;
     req.mobileNumber = decoded.mobileNumber;
-    //req.contact = decoded.contact; // works only if included in token payload
-    jwt.sign({ userId: req.userId, mobileNumber: req.mobileNumber }, process.env.JWT_ACCESS_TOKEN_SECRET);
+
+    jwt.sign({ userId: req.userId, mobileNumber: req.phoneNumber }, process.env.JWT_ACCESS_TOKEN_SECRET);
 
 
     next();
