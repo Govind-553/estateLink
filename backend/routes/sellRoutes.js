@@ -8,16 +8,16 @@ const router = express.Router();
 router.post("/create", verifyAccessToken, checkAdminNumber,  createSellListing);
 // route 1: create sell listing
 
-router.get("/all", verifyAccessToken, getAllSellListings);
+router.get("/all", verifyAccessToken, checkAdminNumber, getAllSellListings);
 // route 2: get all sell listings
 
-router.get("/by-contact", verifyAccessToken, getSellListingsByContact);
+router.get("/by-contact", verifyAccessToken, checkAdminNumber, getSellListingsByContact);
 // route 3: get sell listings by contact
 
-router.put("/update", verifyAccessToken, updateSellListingByContact);
+router.put("/update", verifyAccessToken, checkAdminNumber, updateSellListingByContact);
 // route 4: update sell listings by contact
 
-router.delete("/delete", verifyAccessToken, deleteSellListingByContact);
+router.delete("/delete", verifyAccessToken, checkAdminNumber, deleteSellListingByContact);
 // route 5: delete sell listings by contact
 
 export default router;
