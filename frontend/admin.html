@@ -299,27 +299,6 @@
             color: #333;
         }
 
-        .add-user-btn {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .add-user-btn:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
         .data-table {
             width: 100%;
             border-collapse: collapse;
@@ -345,6 +324,7 @@
 
         .data-table tr:hover {
             background-color: #eff6ff;
+            cursor: pointer;
         }
 
         .data-table td {
@@ -438,6 +418,18 @@
             box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
         }
 
+        .password-container {
+            position: relative;
+        }
+
+        .password-container .fa-eye, .password-container .fa-eye-slash {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+        }
         .button-row {
             display: flex;
             gap: 10px;
@@ -455,11 +447,22 @@
             transition: background-color 0.3s;
         }
         
-        #editBtn { background-color: #ffc107; color: #fff; }
-        #saveBtn { background-color: #28a745; color: #fff; }
-        #saveBtn:disabled { background-color: #a7d7b8; cursor: not-allowed; }
-        #submitUserBtn { background-color: #1e3a8a; color: white; }
-        #submitUserBtn:hover { background-color: #1a3274; }
+        #logoutBtn {
+            width: 100%;
+            margin-top: 1.5rem;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            cursor: pointer;
+        }
+        #logoutBtn:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
 
         /* --- Overlay for background dim --- */
         .overlay {
@@ -582,6 +585,8 @@
             flex-direction: column;
             gap: 0.75rem;
             background: transparent;
+            padding: 0;
+            margin: 0;
         }
 
         .footer-nav li {
@@ -717,10 +722,10 @@
 
 <nav class="navbar">
 <div class="logo">
-  <a href="../frontend/index.html">
-    <img src="img/house.png" alt="Logo">
-    <span>Real Estate</span>
-  </a>
+    <a href="../frontend/index.html">
+        <img src="img/house.png" alt="Logo">
+        <span>Real Estate</span>
+    </a>
 </div>
     <ul class="nav-links">
         <li><a href="#">Sell Flats</a></li>
@@ -793,7 +798,6 @@
 
         <div class="data-header">
             <h2 class="data-title">User Management</h2>
-            <button class="add-user-btn" id="addNewUserBtn"><i class="fas fa-plus"></i> Add New User</button>
         </div>
         
         <div class="data-table-wrapper">
@@ -825,48 +829,11 @@
         <label for="profileMobile">Mobile Number:</label>
         <input type="text" id="profileMobile" value="+91 9876543210" disabled>
         <label for="profilePassword">Password:</label>
-        <input type="password" id="profilePassword" value="********" disabled>
-        <div class="button-row">
-            <button id="editBtn">Edit</button>
-            <button id="saveBtn" disabled>Save</button>
+        <div class="password-container">
+            <input type="password" id="profilePassword" value="Admin@25" disabled>
+            <i class="fas fa-eye-slash" id="togglePassword"></i>
         </div>
-    </div>
-</div>
-
-<div id="userPanel" class="side-panel">
-    <div class="panel-header">
-        <span id="userPanelTitle">Add New User</span>
-        <button class="close-btn" id="closeUserPanelBtn">&times;</button>
-    </div>
-    <div class="panel-content">
-        <form id="userForm">
-            <input type="hidden" id="userIndex" value="">
-            
-            <label for="userName">Name:</label>
-            <input type="text" id="userName" name="name" placeholder="e.g., John Doe" required>
-            
-            <label for="userContact">Contact:</label>
-            <input type="tel" id="userContact" name="contact" placeholder="e.g., 9876543210" pattern="[6789]\d{9}" maxlength="10" required>
-
-            <label for="userDate">Date Joined:</label>
-            <input type="date" id="userDate" name="date" required>
-            
-            <label for="userType">User Type:</label>
-            <select id="userType" name="ownershipType" required>
-                <option value="Owner">Owner</option>
-                <option value="Agent">Agent</option>
-            </select>
-            
-            <label for="userStatus">Account Status:</label>
-            <select id="userStatus" name="status" required>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-            </select>
-
-            <div class="button-row">
-                <button type="submit" id="submitUserBtn">Add User</button>
-            </div>
-        </form>
+        <button id="logoutBtn">Logout</button>
     </div>
 </div>
 
@@ -959,25 +926,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Panels
     const profilePanel = document.getElementById('profilePanel');
-    const userPanel = document.getElementById('userPanel');
 
     // Panel Triggers
     const profileIcon = document.getElementById('profileIcon');
-    const addNewUserBtn = document.getElementById('addNewUserBtn');
     
     // Panel Close Buttons
     const closeProfileBtn = document.getElementById('closeProfileBtn');
-    const closeUserPanelBtn = document.getElementById('closeUserPanelBtn');
     
-    // User Form
-    const userForm = document.getElementById('userForm');
-    const userPanelTitle = document.getElementById('userPanelTitle');
-    const submitUserBtn = document.getElementById('submitUserBtn');
-    const userIndexInput = document.getElementById('userIndex');
-
     // Filtering
     const mobileSearchInput = document.getElementById('mobileSearch');
     const statusDropdown = document.getElementById('accountStatusFilter');
+    const togglePassword = document.getElementById('togglePassword');
+    const profilePasswordInput = document.getElementById('profilePassword');
+    const logoutBtn = document.getElementById('logoutBtn');
 
     // --- Core Functions ---
     function renderTable(data) {
@@ -986,10 +947,9 @@ document.addEventListener('DOMContentLoaded', function() {
             usersBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;">No users found.</td></tr>`;
             return;
         }
-        data.forEach((user, index) => {
+        data.forEach((user) => {
             const statusClass = `status-${user.status.toLowerCase()}`;
             const row = document.createElement('tr');
-            row.dataset.index = index; // Use original index for editing
             row.innerHTML = `
                 <td>${user.name}</td>
                 <td>+91 ${user.contact}</td>
@@ -997,8 +957,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${user.type}</td>
                 <td><span class="${statusClass}">${user.status}</span></td>
             `;
-            // Add an event listener for editing, on the whole row for better UX
-            row.addEventListener('click', () => handleEditUser(row.dataset.index));
             usersBody.appendChild(row);
         });
         updateCounters();
@@ -1020,64 +978,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function closeAllPanels() {
         profilePanel.style.width = '0';
-        userPanel.style.width = '0';
         overlay.classList.remove('show');
     }
 
     // --- Event Handlers ---
     hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
     profileIcon.addEventListener('click', (e) => { e.preventDefault(); openPanel(profilePanel); });
-    addNewUserBtn.addEventListener('click', handleAddNewUser);
     
     closeProfileBtn.addEventListener('click', closeAllPanels);
-    closeUserPanelBtn.addEventListener('click', closeAllPanels);
     overlay.addEventListener('click', closeAllPanels);
+    
+    // Toggle Password Visibility
+    togglePassword.addEventListener('click', () => {
+        const type = profilePasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        profilePasswordInput.setAttribute('type', type);
+        togglePassword.classList.toggle('fa-eye');
+        togglePassword.classList.toggle('fa-eye-slash');
+    });
 
-    // --- User CRUD ---
-    function handleAddNewUser() {
-        userPanelTitle.textContent = 'Add New User';
-        submitUserBtn.textContent = 'Add User';
-        userForm.reset();
-        userIndexInput.value = '';
-        openPanel(userPanel);
-    }
-
-    function handleEditUser(index) {
-        const user = usersData[index];
-        if (!user) return;
-
-        userPanelTitle.textContent = 'Edit User';
-        submitUserBtn.textContent = 'Save Changes';
-        userIndexInput.value = index;
-
-        document.getElementById('userName').value = user.name;
-        document.getElementById('userContact').value = user.contact;
-        document.getElementById('userDate').value = user.date;
-        document.getElementById('userType').value = user.type;
-        document.getElementById('userStatus').value = user.status;
-
-        openPanel(userPanel);
-    }
-
-    userForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const formData = {
-            name: document.getElementById('userName').value,
-            contact: document.getElementById('userContact').value,
-            date: document.getElementById('userDate').value,
-            type: document.getElementById('userType').value,
-            status: document.getElementById('userStatus').value
-        };
-
-        const index = userIndexInput.value;
-        if (index === '') { // Adding new user
-            usersData.push(formData);
-        } else { // Editing existing user
-            usersData[parseInt(index)] = formData;
-        }
-        
-        filterAndRender();
-        closeAllPanels();
+    // Logout Button
+    logoutBtn.addEventListener('click', () => {
+        window.location.href = '../frontend/index.html';
     });
 
     // --- Filtering Logic ---
