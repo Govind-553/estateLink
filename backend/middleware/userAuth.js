@@ -11,7 +11,7 @@ export const verifyAccessToken = (req, res, next) => {
   }
 
   try {
-    const token = authHeader.split(" ")[1];
+    const token = authHeader.split(" ")[1]; // extract token
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
 
     if (!decoded) {
@@ -21,12 +21,11 @@ export const verifyAccessToken = (req, res, next) => {
       });
     }
 
-   // req.userId = decoded.userId;
+    // Attach user info from token to request object
+    req.userId = decoded.userId;
     req.mobileNumber = decoded.mobileNumber;
 
-    jwt.sign({ userId: req.userId, mobileNumber: req.phoneNumber }, process.env.JWT_ACCESS_TOKEN_SECRET);
-
-
+    // Don't re-sign token here — just verify it
     next();
   } catch (error) {
     console.error("Error in Verifying Token: ", error.message);
