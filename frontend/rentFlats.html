@@ -1227,377 +1227,235 @@
 </footer>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // --- Navbar Functionality ---
-        const hamburger = document.querySelector('.hamburger');
-        const navLinks = document.querySelector('.nav-links');
 
-        hamburger.addEventListener('click', function() {
-            navLinks.classList.toggle('active');
-        });
+document.addEventListener('DOMContentLoaded', function () {
+    // --- Navbar Functionality ---
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
 
-        // --- Property Panel and CRUD Functionality ---
-        const propertyPanel = document.getElementById('propertyPanel');
-        const addNewBtn = document.getElementById('addNewBtn');
-        const closePropertyPanelBtn = document.getElementById('closePropertyPanel');
-        const propertyForm = document.getElementById('addPropertyForm');
-        const propertiesBody = document.getElementById('PropertiesBody');
-        const propertyPanelTitle = document.getElementById('propertyPanelTitle');
-        const submitPropertyBtn = document.getElementById('submitPropertyBtn');
-        const propertyIndexInput = document.getElementById('propertyIndex');
-        const overlay = document.getElementById('overlay');
+    hamburger?.addEventListener('click', () => {
+        navLinks?.classList.toggle('active');
+    });
 
-        function closePanel() {
-            propertyPanel.style.width = '0';
-            overlay.style.display = 'none';
+    // --- DOM Elements ---
+    const propertyPanel = document.getElementById('propertyPanel');
+    const addNewBtn = document.getElementById('addNewBtn');
+    const closePropertyPanelBtn = document.getElementById('closePropertyPanel');
+    const propertyForm = document.getElementById('addPropertyForm');
+    const propertiesBody = document.getElementById('PropertiesBody');
+    const propertyPanelTitle = document.getElementById('propertyPanelTitle');
+    const submitPropertyBtn = document.getElementById('submitPropertyBtn');
+    const propertyIndexInput = document.getElementById('propertyIndex');
+    const overlay = document.getElementById('overlay');
+
+    // --- Panel Controls ---
+    const closePanel = () => {
+        propertyPanel.style.width = '0';
+        overlay.style.display = 'none';
+    };
+
+    const openPanel = () => {
+        propertyPanel.style.width = '320px';
+        overlay.style.display = 'block';
+    };
+
+    // --- Token Helper ---
+    const getToken = () => {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+            alert("No token found. Please log in again.");
+            return null;
         }
-        
-        function openPanel() {
-            propertyPanel.style.width = '320px';
-            overlay.style.display = 'block';
-        }
+        return token;
+    };
 
-        addNewBtn.addEventListener('click', () => {
-            propertyPanelTitle.textContent = 'Add New Property';
-            submitPropertyBtn.textContent = 'Add Property';
-            propertyForm.reset();
-            propertyIndexInput.value = '';
-            openPanel();
-        });
+    // --- Add New ---
+    addNewBtn?.addEventListener('click', () => {
+        propertyPanelTitle.textContent = 'Add New Rent Listing';
+        submitPropertyBtn.textContent = 'Add Listing';
+        propertyForm.reset();
+        propertyIndexInput.value = '';
+        openPanel();
+    });
 
-        closePropertyPanelBtn.addEventListener('click', closePanel);
-        overlay.addEventListener('click', closePanel);
+    closePropertyPanelBtn?.addEventListener('click', closePanel);
+    overlay?.addEventListener('click', closePanel);
 
-        propertiesBody.addEventListener('click', (e) => {
-            const row = e.target.closest('tr');
-            if (!row) return;
+    // --- DELETE & EDIT ---
+    propertiesBody?.addEventListener('click', async (e) => {
+        const row = e.target.closest('tr');
+        if (!row) return;
 
-            if (e.target.closest('.delete-btn')) {
-                const confirmDelete = confirm('Are you sure you want to delete this property?');
-                if (confirmDelete) {
-                    row.remove();
-                    updateCounters();
-                    alert('Property deleted successfully!');
+        const token = getToken();
+        if (!token) return;
+
+        if (e.target.closest('.delete-btn')) {
+            const contact = e.target.closest('.delete-btn').dataset.contact;
+            if (confirm('Are you sure you want to delete this rent listing?')) {
+                const res = await fetch(`http://localhost:3000/api/rentflats/delete`, {
+                    method: 'DELETE',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({ contact })
+                });
+                if (res.ok) {
+                    alert('✅ Listing deleted successfully!');
+                    fetchProperties();
+                } else {
+                    alert("❌ Failed to delete listing");
                 }
-            } else if (e.target.closest('.edit-btn')) {
-                const cells = row.querySelectorAll('td');
-                const data = {
-                    location: cells[0].textContent.trim(),
-                    propertyType: cells[1].textContent.trim(),
-                    price: cells[2].textContent.trim(),
-                    name: cells[3].textContent.trim(),
-                    contact: cells[4].textContent.trim(),
-                    date: cells[5].textContent.trim(),
-                    ownershipType: cells[6].textContent.trim()
-                };
-                
-                propertyPanelTitle.textContent = 'Edit Property';
-                submitPropertyBtn.textContent = 'Save Changes';
-                propertyIndexInput.value = row.rowIndex - 1; 
-                
-                document.getElementById('propertyLocation').value = data.location;
-                document.getElementById('propertyType').value = data.propertyType;
-                document.getElementById('propertyPrice').value = data.price;
-                document.getElementById('propertyName').value = data.name;
-                document.getElementById('propertyContact').value = data.contact;
-                document.getElementById('propertyDate').value = data.date;
-                document.getElementById('propertyOwnership').value = data.ownershipType;
-                
-                openPanel();
             }
-        });
-
-        propertyForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formData = {
-                location: document.getElementById('propertyLocation').value,
-                propertyType: document.getElementById('propertyType').value,
-                price: document.getElementById('propertyPrice').value,
-                name: document.getElementById('propertyName').value,
-                contact: document.getElementById('propertyContact').value,
-                date: document.getElementById('propertyDate').value,
-                ownershipType: document.getElementById('propertyOwnership').value
+        } else if (e.target.closest('.edit-btn')) {
+            const contact = e.target.closest('.edit-btn').dataset.contact;
+            const cells = row.querySelectorAll('td');
+            const data = {
+                location: cells[0].textContent.trim(),
+                propertyType: cells[1].textContent.trim(),
+                price: cells[2].textContent.trim(),
+                name: cells[3].textContent.trim(),
+                contact: cells[4].textContent.trim(),
+                date: cells[5].textContent.trim(),
+                ownershipType: cells[6].textContent.trim()
             };
 
-            const index = propertyIndexInput.value;
-            if (index === '') {
-                const newRow = propertiesBody.insertRow();
-                newRow.innerHTML = `
-                    <td>${formData.location}</td>
-                    <td>${formData.propertyType}</td>
-                    <td>${formData.price}</td>
-                    <td>${formData.name}</td>
-                    <td>${formData.contact}</td>
-                    <td>${formData.date}</td>
-                    <td>${formData.ownershipType}</td>
-                    <td class="actions-cell">
-                        <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
-                        <button class="action-btn delete-btn"><i class="fas fa-trash-alt"></i> Delete</button>
-                    </td>
-                `;
-                alert('New property added successfully!');
-            } else {
-                const rowToEdit = propertiesBody.rows[parseInt(index)];
-                const cells = rowToEdit.querySelectorAll('td');
-                cells[0].textContent = formData.location;
-                cells[1].textContent = formData.propertyType;
-                cells[2].textContent = formData.price;
-                cells[3].textContent = formData.name;
-                cells[4].textContent = formData.contact;
-                cells[5].textContent = formData.date;
-                cells[6].textContent = formData.ownershipType;
-                alert('Property updated successfully!');
-            }
+            propertyPanelTitle.textContent = 'Edit Rent Listing';
+            submitPropertyBtn.textContent = 'Save Changes';
+            propertyIndexInput.value = contact;
 
-            closePanel();
-            updateCounters();
-        });
-        
-        // --- Search Section Functionality ---
-        const dropdowns = document.querySelectorAll('.dropdown');
-        const selectedFilters = document.getElementById('selectedFilters');
-        const searchInputs = document.querySelectorAll('.search-input');
-        const searchBtn = document.getElementById('searchBtn');
-        const clearButtons = document.querySelectorAll('.clear-btn');
-        
-        let filters = {
-            location: null,
-            flatType: null,
-            price: null,
-            mobile: null,
-            tenantType: null
+            document.getElementById('propertyLocation').value = data.location;
+            document.getElementById('propertyType').value = data.propertyType;
+            document.getElementById('propertyPrice').value = data.price;
+            document.getElementById('propertyName').value = data.name;
+            document.getElementById('propertyContact').value = data.contact;
+            document.getElementById('propertyDate').value = data.date;
+            document.getElementById('propertyOwnership').value = data.ownershipType;
+
+            openPanel();
+        }
+    });
+
+    // --- ADD & UPDATE ---
+    propertyForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = {
+            location: document.getElementById('propertyLocation').value,
+            propertyType: document.getElementById('propertyType').value,
+            price: document.getElementById('propertyPrice').value,
+            name: document.getElementById('propertyName').value,
+            contact: document.getElementById('propertyContact').value,
+            date: document.getElementById('propertyDate').value,
+            ownershipType: document.getElementById('propertyOwnership').value
         };
 
-        dropdowns.forEach(dropdown => {
-            const btn = dropdown.querySelector('.dropdown-btn');
-            const options = dropdown.querySelectorAll('.dropdown-option');
+        const existingContact = propertyIndexInput.value;
+        const token = getToken();
+        if (!token) return;
 
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdowns.forEach(d => {
-                    if(d !== dropdown) d.classList.remove('active');
-                });
-                dropdown.classList.toggle('active');
+        try {
+            const url = existingContact
+                ? `http://localhost:3000/api/rentflats/update/${existingContact}`
+                : `http://localhost:3000/api/rentflats/create`;
+
+            const method = existingContact ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify(formData)
             });
 
-            options.forEach(option => {
-                option.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const value = option.dataset.value;
-                    const text = option.textContent;
-                    const dropdownId = dropdown.id;
-                    
-                    btn.querySelector('span').textContent = text;
-                    options.forEach(opt => opt.classList.remove('selected'));
-                    option.classList.add('selected');
-                    
-                    filters[dropdownId] = { value, text };
-                    dropdown.classList.remove('active');
-                    updateSelectedFilters();
-                    filterTable();
-                });
-            });
-        });
-
-        searchInputs.forEach(input => {
-            input.addEventListener('input', () => {
-                filters[input.id] = { value: input.value, text: input.value };
-                filterTable();
-                updateSelectedFilters();
-            });
-        });
-        
-        clearButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const targetId = button.dataset.target;
-                const input = document.getElementById(targetId);
-                input.value = '';
-                filters[targetId] = null;
-                filterTable();
-                updateSelectedFilters();
-            });
-        });
-
-        searchBtn.addEventListener('click', () => {
-            filterTable();
-            alert('Search applied!');
-        });
-        
-        document.addEventListener('click', () => {
-            dropdowns.forEach(d => d.classList.remove('active'));
-        });
-
-        function updateSelectedFilters() {
-            selectedFilters.innerHTML = '';
-            
-            Object.keys(filters).forEach(key => {
-                if(filters[key] && filters[key].value) {
-                    const tag = document.createElement('div');
-                    tag.className = 'filter-tag';
-                    tag.innerHTML = `
-                        <span>${filters[key].text}</span>
-                        <div class="remove" data-filter="${key}">×</div>
-                    `;
-                    selectedFilters.appendChild(tag);
-                }
-            });
-
-            selectedFilters.querySelectorAll('.remove').forEach(remove => {
-                remove.addEventListener('click', (e) => {
-                    const filterKey = e.target.dataset.filter;
-                    
-                    filters[filterKey] = null;
-                    
-                    const dropdown = document.getElementById(filterKey);
-                    if (dropdown) {
-                        const btn = dropdown.querySelector('.dropdown-btn span');
-                        btn.textContent = getDefaultText(filterKey);
-                        dropdown.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
-                    }
-                    const input = document.getElementById(filterKey);
-                    if (input) {
-                        input.value = '';
-                    }
-
-                    updateSelectedFilters();
-                    filterTable();
-                });
-            });
-        }
-        
-        function getDefaultText(filterKey) {
-            const defaults = {
-                'location': 'Select Location',
-                'flatType': 'Select Property Type',
-                'tenantType': 'Select Preference'
-            };
-            return defaults[filterKey] || 'Select';
-        }
-
-        function filterTable() {
-            const rows = propertiesBody.querySelectorAll('tr');
-            
-            rows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                const rowData = {
-                    location: cells[0].textContent.trim(),
-                    propertyType: cells[1].textContent.trim(),
-                    price: cells[2].textContent.trim(),
-                    name: cells[3].textContent.trim(),
-                    contact: cells[4].textContent.trim(),
-                    date: cells[5].textContent.trim(),
-                    ownershipType: cells[6].textContent.trim()
-                };
-                
-                let isMatch = true;
-
-                if (filters.location && filters.location.value && rowData.location !== filters.location.value) {
-                    isMatch = false;
-                }
-
-                if (filters.flatType && filters.flatType.value) {
-                    const typeMatch = (rowData.propertyType.toLowerCase().replace(/\s/g, '') === filters.flatType.value.toLowerCase());
-                    if (!typeMatch) {
-                        isMatch = false;
-                    }
-                }
-
-                if (filters.price && filters.price.value) {
-                    const priceValue = filters.price.value.replace(/[^0-9\-\,]/g, '');
-                    const rowPriceValue = rowData.price.replace(/[^0-9]/g, '');
-                    
-                    if (priceValue.includes('-')) {
-                        const [min, max] = priceValue.split('-').map(s => parseInt(s.trim().replace(/,/g, '')));
-                        const currentPrice = parseInt(rowPriceValue);
-                        if (isNaN(currentPrice) || currentPrice < min || currentPrice > max) {
-                            isMatch = false;
-                        }
-                    } else if (priceValue) {
-                        if (!rowPriceValue.includes(priceValue.replace(/,/g, ''))) {
-                            isMatch = false;
-                        }
-                    }
-                }
-
-                if (filters.mobile && filters.mobile.value) {
-                    if (!rowData.contact.includes(filters.mobile.value)) {
-                        isMatch = false;
-                    }
-                }
-
-                if (filters.tenantType && filters.tenantType.value) {
-                    const tenantMatch = (rowData.ownershipType.toLowerCase().includes(filters.tenantType.value.toLowerCase()));
-                    if (!tenantMatch) {
-                        isMatch = false;
-                    }
-                }
-
-                row.style.display = isMatch ? '' : 'none';
-            });
-            updateCounters();
-        }
-        
-        // --- Property Counters Functionality ---
-        function updateCounters() {
-            const allRows = Array.from(propertiesBody.rows);
-            const visibleRows = allRows.filter(row => row.style.display !== 'none');
-            const total = visibleRows.length;
-            let owners = 0;
-            let agents = 0;
-
-            visibleRows.forEach(row => {
-                const ownership = row.cells[6].textContent.trim();
-                if (ownership === 'Owner') {
-                    owners++;
-                } else if (ownership === 'Agent') {
-                    agents++;
-                }
-            });
-
-            document.getElementById('totalProperties').textContent = total;
-            document.getElementById('ownerProperties').textContent = owners;
-            document.getElementById('agentProperties').textContent = agents;
-        }
-
-        updateCounters(); // Initial call to set counters on page load
-
-        // --- Toggle View for Mobile ---
-        const toggleViewBtn = document.getElementById('toggleViewBtn');
-        const propertiesTable = document.getElementById('PropertiesTable');
-        
-        let isDefaultView = true;
-
-        function checkMobileAndShowButton() {
-            const isMobile = window.matchMedia('(max-width: 768px)').matches;
-            if (isMobile) {
-                toggleViewBtn.style.display = 'flex';
-                // Reset to default view on resize
-                if (!isDefaultView) {
-                    propertiesTable.classList.remove('table-horizontal-view');
-                    toggleViewBtn.innerHTML = '<i class="fas fa-arrows-alt-h"></i> Full View';
-                    isDefaultView = true;
-                }
+            const data = await res.json();
+            if (res.ok) {
+                alert('✅ ' + (existingContact ? 'Rent listing updated!' : 'New rent listing created!'));
             } else {
-                toggleViewBtn.style.display = 'none';
-                propertiesTable.classList.remove('table-horizontal-view');
-                isDefaultView = true;
+                alert('❌ Error: ' + (data.message || 'Something went wrong'));
             }
+        } catch (err) {
+            console.error("👉 Fetch error:", err);
+            alert("❌ Failed to connect to server. Check console.");
         }
-        
-        toggleViewBtn.addEventListener('click', () => {
-            isDefaultView = !isDefaultView;
-            if (isDefaultView) {
-                propertiesTable.classList.remove('table-horizontal-view');
-                toggleViewBtn.innerHTML = '<i class="fas fa-arrows-alt-h"></i> Full View';
-            } else {
-                propertiesTable.classList.add('table-horizontal-view');
-                toggleViewBtn.innerHTML = '<i class="fas fa-table"></i> Default View';
-            }
-        });
-        
-        window.addEventListener('resize', checkMobileAndShowButton);
-        checkMobileAndShowButton();
+
+        fetchProperties();
+        closePanel();
+        updateCounters();
     });
+
+    // --- Counters ---
+    function updateCounters() {
+        const allRows = Array.from(propertiesBody.rows);
+        const visibleRows = allRows.filter(row => row.style.display !== 'none');
+        const total = visibleRows.length;
+        let owners = 0, agents = 0;
+
+        visibleRows.forEach(row => {
+            const ownership = row.cells[6].textContent.trim();
+            if (ownership === 'Owner') owners++;
+            else if (ownership === 'Agent') agents++;
+        });
+
+        document.getElementById('totalProperties').textContent = total;
+        document.getElementById('ownerProperties').textContent = owners;
+        document.getElementById('agentProperties').textContent = agents;
+    }
+
+    // --- Fetch All Properties ---
+    async function fetchProperties() {
+        const token = getToken();
+        if (!token) return;
+
+        try {
+            const res = await fetch('http://localhost:3000/api/rentflats/all', {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (!res.ok) {
+                console.error("❌ Failed to fetch properties");
+                return;
+            }
+
+            const data = await res.json();
+            propertiesBody.innerHTML = '';
+
+            data.forEach(property => {
+                const newRow = propertiesBody.insertRow();
+                newRow.innerHTML = `
+                    <td>${property.location}</td>
+                    <td>${property.propertyType}</td>
+                    <td>${property.price}</td>
+                    <td>${property.name}</td>
+                    <td>${property.contact}</td>
+                    <td>${property.date}</td>
+                    <td>${property.ownershipType}</td>
+                    <td class="actions-cell">
+                        <button class="action-btn edit-btn" data-contact="${property.contact}">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-btn delete-btn" data-contact="${property.contact}">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </td>
+                `;
+            });
+
+            updateCounters();
+        } catch (err) {
+            console.error('Error fetching properties:', err);
+        }
+    }
+
+    // Run on page load
+    fetchProperties();
+});
+
+
 </script>
 
 </body>
