@@ -121,7 +121,7 @@ export const loginUser = async (req, res) => {
         }
 };
 
-//Route 3 - Forgot Password
+//Route 3 - Forgot Password (password reset request)
 export const forgotPassword = async (req, res) => {
     // Extract the mobile number from the request body    
     const { contact } = req.body;
@@ -132,28 +132,72 @@ export const forgotPassword = async (req, res) => {
 
     try {
         // Check if the user exists
-        const existingUser = await User.findOne({ mobileNumber });
+        const existingUser = await User.findOne({ mobileNumber: contact });
         if (!existingUser) {
             return res.status(400).json({ msg: 'Mobile number is not registered.' });
         }
 
         // Generate a password reset token (you can use a library like jsonwebtoken)
-        const resetToken = existingUser.generateResetToken();
+        //const resetToken = existingUser.generateResetToken();
 
         // Send the reset token to the user's email or mobile number
         // (For simplicity, we'll just return it in the response)
+        // Just confirm user exists
         res.status(200).json({
-            status: 'success',
-            message: 'Password reset link has been sent.',
-            data: {
-                resetToken,
-            }
+            status: "success",
+            message: "User exists. Proceed with OTP verification using Firebase.",
         });
+
     } catch (error) {
         console.error('Error processing forgot password request:', error);
         res.status(500).json({ msg: 'Server error. Please try again later.' });
     }
 };
+
+//route 9 - resetpassword 
+export const resetPassword = async (req, res) => {
+    const { contact, confirmPassword, newPassword } = req.body;
+
+    if (!contact || !confirmPassword || !newPassword) {
+        return res.status(400).json({ msg: "Mobile number, confirm password and new password are required." });
+    }
+
+    if (newPassword !== confirmPassword) {
+        return res.status(400).json({ msg: "Passwords do not match." });
+    }
+
+    if (newPassword.length < 6) {
+        return res.status(400).json({ msg: "Password must be at least 6 characters long." });
+    }   
+     
+    try {
+        //pendingUsers[mobileNumber] = { mobileNumber: mobileNumber };
+
+        // Find user
+        const user = await User.findOne({ mobileNumber: contact });
+        if (!user) {
+            return res.status(400).json({ msg: "User not found." });
+        }
+
+        // Hash new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Save new password
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({
+            status: "success",
+            message: "Password updated successfully. Please log in again.",
+        });
+
+    } catch (error) {
+        console.error("Error resetting password:", error);
+        res.status(500).json({ msg: "Server error. Please try again later." });
+    }
+};
+
 
 //Route 5 - verify-otp
 export const verifyOtp = async (req, res) => {

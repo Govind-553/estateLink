@@ -1,7 +1,7 @@
 // Import required packages
 import express from "express";
 const router = express.Router(); 
-import {registerUser, forgotPassword, loginUser, verifyOtp, }  from "../controllers/userController.js";
+import {registerUser, forgotPassword, loginUser, verifyOtp,resetPassword }  from "../controllers/userController.js";
 
 // Import the User model
 import User from "../models/User.js";
@@ -12,8 +12,11 @@ router.post('/create', registerUser);
 //Route 2 - Login existing User
 router.post("/login",loginUser);
 
-//Route 3 - Forgot password
+//Route 3 - Forgot password (password reset request)
 router.post("/forgot", forgotPassword);
+
+//Round 9 - forgot password (verify OTP and reset password)
+router.post("/reset-password", resetPassword);
 
 //Route 4 - Resend OTP
 router.post("/resend-otp", (req, res) => {
