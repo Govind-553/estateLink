@@ -492,15 +492,18 @@
 
         const firebaseConfig = {
             apiKey: "AIzaSyArmp7LtzuH4GKXUX9xKKMgaMHV1ioSeKU",
-      authDomain: "realestate-ba037.firebaseapp.com",
-      projectId: "realestate-ba037",
-      storageBucket: "realestate-ba037.appspot.com",
-      messagingSenderId: "1014619180710",
-      appId: "1:1014619180710:web:49f231abc721762a472e67",
-      measurementId: "G-YS2N7C27EC"
+            authDomain: "realestate-ba037.firebaseapp.com",
+            projectId: "realestate-ba037",
+            storageBucket: "realestate-ba037.appspot.com",
+            messagingSenderId: "1014619180710",
+            appId: "1:1014619180710:web:49f231abc721762a472e67",
+            measurementId: "G-YS2N7C27EC"
         };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+
+        // 👇 Add debug here
+        console.log("Auth object:", auth);
 
         //let confirmationResult;
         let recaptchaVerifier;
@@ -515,26 +518,50 @@
             const formContainer = document.getElementById('form-container');
             // For Register
             function setupRecaptchaRegister() {
-                if (!recaptchaRegister) { // only create once
-                    recaptchaRegister = new RecaptchaVerifier(
-                        'recaptcha-container-register',
-                        { size: 'invisible' },
-                        auth
-        );
-        recaptchaRegister.render();
+                if (window.recaptchaRegister) {
+        console.log("♻️ Re-using existing reCAPTCHA");
+        return window.recaptchaRegister;
     }
+    // Always create a new instance for resend
+     const container = document.getElementById('recaptcha-container-register');
+    if (!container) {
+        console.error("❌ recaptcha-container-register not found in DOM!");
+        return null;
+    }
+
+    return new RecaptchaVerifier(container, {
+        size: 'invisible',
+        callback: (response) => {
+            console.log("✅ reCAPTCHA solved:", response);
+        },
+        'expired-callback': () => {
+            showCustomPopup("⚠️ reCAPTCHA expired, please try again.");
+        }
+    }, auth);
 }
 
 // For Forgot Password
 function setupRecaptchaForgot() {
-    if (!recaptchaForgot) { // only create once
-        recaptchaForgot = new RecaptchaVerifier(
-            'recaptcha-container-forgot',
-            { size: 'invisible' },
-            auth
-        );
-        recaptchaForgot.render();
+    if (window.recaptchaForgot) {
+        console.log("♻️ Re-using existing reCAPTCHA");
+        return window.recaptchaForgot;
     }
+    // Always create a new instance for resend
+     const container = document.getElementById('recaptcha-container-forgot');
+    if (!container) {
+        console.error("❌ recaptcha-container-forgot not found in DOM!");
+        return null;
+    }
+
+    return new RecaptchaVerifier(container, {
+        size: 'invisible',
+        callback: (response) => {
+            console.log("✅ reCAPTCHA solved:", response);
+        },
+        'expired-callback': () => {
+            showCustomPopup("⚠️ reCAPTCHA expired, please try again.");
+        }
+    }, auth);
 }
 
             const renderLoginForm = () => {
@@ -610,8 +637,8 @@ function setupRecaptchaForgot() {
                                 <span>+91</span>
                                 <input type="tel" id="fpMobile" name="mobile" placeholder="Enter your mobile number" required pattern="^[6-9]\\d{9}$">
                             </div>
-                        </div>
                             <div id="recaptcha-container-forgot"></div>
+                        </div>
                         <button type="submit" class="btn" id="sendOtpBtn">Send OTP</button>
                     </form>
                     <p class="message-text"><a href="#" id="showLoginLink">Back to Login</a></p>
@@ -639,39 +666,75 @@ function setupRecaptchaForgot() {
                                 </div>
                             </div>
                             <button type="submit" class="btn" id="verifyOtpBtn">Verify OTP</button>
+                            <div id="recaptcha-container-register"></div>
+                            <div id="recaptcha-container-forgot"></div>
                             <p class="message-text">Didn't receive the OTP? <a href="#" id="resendOtpLink">Resend OTP</a></p>
                         </form>
                         <p class="message-text"><a href="#" id="changeNumberLink">Change Number</a></p>
                     `
-
                     setupOtpLogic(mode, phoneNumber);
                     setupEventListeners();
 
-                const setupRecaptcha = (containerId, buttonId, loginMobile) => {
-                        // Create reCAPTCHA only once
-                        if (recaptchaVerifier) {                     
-                            recaptchaVerifier.clear();
-                        }
-                    
-                        if (!recaptchaVerifier) {
-                            recaptchaVerifier = new RecaptchaVerifier(containerId, {
-                                size: "invisible",
-                                callback: (response) => {
-                                    console.log("reCAPTCHA solved:", response);
-                                },
-                                "expired-callback": () => {
-                                    showCustomPopup("reCAPTCHA expired. Please try again.");
-                                }
-                            }, auth);
-                    
-                            // Must render it
-                            recaptchaVerifier.render().then(widgetId => {
-                                window.recaptchaWidgetId = widgetId;
-                            });
-                        console.log("📌 reCAPTCHA initialized on:", containerId);
-                    };
-                }
-            };
+                                    // ✅ Resend OTP
+const resendOtpLink = document.getElementById('resendOtpLink');
+if (resendOtpLink) {
+    resendOtpLink.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        let lastPhoneNumber = localStorage.getItem('tempContact');
+
+        if (!lastPhoneNumber) {
+            showCustomPopup('⚠️ Phone number not found. Please go back and enter your number again.');
+            return;
+        }
+
+        // Ensure correct format
+        if (!lastPhoneNumber.startsWith("+91")) {
+            lastPhoneNumber = "+91" + lastPhoneNumber;
+        }
+
+        try {
+            if (mode === 'register') {
+                recaptcha = setupRecaptchaRegister();
+            } else if (mode === 'forgot') {
+                recaptcha = setupRecaptchaForgot();
+            } else {
+                showCustomPopup('❌ Invalid mode for resending OTP.');
+                return;
+            }
+            
+            if (!recaptcha) {
+                showCustomPopup("❌ Could not initialize reCAPTCHA");
+                return;
+            }
+
+            const confirmationResult = await signInWithPhoneNumber(auth, lastPhoneNumber, recaptcha);
+            window.confirmationResult = confirmationResult;
+
+            showCustomPopup('✅ OTP resend successfully!');
+        } catch (error) {
+            console.error("Resend OTP error:", error);
+            showCustomPopup('❌ Error resending OTP: ' + error.message);
+        }
+    });
+}
+
+                /*async function setupRecaptcha(containerId = "recaptcha-container-forgot") {
+    // Don't clear if already destroyed
+    recaptchaVerifier = new RecaptchaVerifier(containerId, {
+        size: "invisible",
+        callback: (response) => {
+            console.log("✅ reCAPTCHA solved:", response);
+        },
+        "expired-callback": () => {
+            showCustomPopup("⚠️ reCAPTCHA expired, please try again.");
+        }
+    }, auth);
+
+    await recaptchaVerifier.render();
+    return recaptchaVerifier;
+}*/
+            }
 
 
             const renderPasswordResetForm = () => {
@@ -822,9 +885,8 @@ function setupRecaptchaForgot() {
 
                     try {
                         // Make sure phone is in +E.164 format
-                        setupRecaptchaRegister();
                 
-                        confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaRegister);
+                        confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, setupRecaptchaRegister());
                         window.confirmationResult = confirmationResult;
                         showCustomPopup("OTP sent for registration!");
 
@@ -839,34 +901,6 @@ function setupRecaptchaForgot() {
                         showCustomPopup("Error sending OTP: " + error.message);
                     }
                 });
-
-                const resendOtpLink = document.getElementById('resendOtpLink');
-if (resendOtpLink) {
-    resendOtpLink.addEventListener('click', async (e) => {
-        e.preventDefault();
-
-        const lastPhoneNumber = localStorage.getItem("tempContact");
-
-        if (!lastPhoneNumber || !lastPhoneNumber.startsWith("+91")) {
-            showCustomPopup('Phone number not found. Please go back and enter your number again.');
-            return;
-        }
-
-        try {
-            // Re-initialize recaptcha each time
-            setupRecaptchaForgot();
-
-            // Send OTP again
-            confirmationResult = await signInWithPhoneNumber(auth, lastPhoneNumber, recaptchaForgot);
-            window.confirmationResult = confirmationResult;
-
-            showCustomPopup('✅ OTP resent successfully!');
-        } catch (error) {
-            console.error("Resend OTP error:", error);
-            showCustomPopup('❌ Error resending OTP: ' + error.message);
-        }
-    });
-}
 
                 //this form help to send the otp for forgot password.
                 const forgotPasswordForm = document.getElementById('forgotPasswordForm');
@@ -898,12 +932,11 @@ if (resendOtpLink) {
                         }
 
                         showCustomPopup("✅ " + data.message);
-                        setupRecaptchaForgot();
-                        confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaForgot);
+                        confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, setupRecaptchaForgot());
                         window.confirmationResult = confirmationResult;
                         // Save mobile for reset-password API call later
                         localStorage.setItem("tempContact", phoneNumber);
-                        tempContact =  phoneNumber;
+                        tempContact = phoneNumber;
                         showCustomPopup("OTP sent for password reset!");
                         renderOtpForm("forgotPassword", phoneNumber);
                         
