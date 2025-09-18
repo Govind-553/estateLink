@@ -2,32 +2,40 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Admin from "../models/Admin.js";
+import User from "../models/User.js";
 
 const router = express.Router();
 
 // Admin Login
 router.post("/login", async (req, res) => {
+  const { mobileNumber, password } = req.body;
   try {
-    const { mobileNumber, password } = req.body;
-
     // Check if admin exists
-    const admin = await Admin.findOne({ mobileNumber });
-    if (!admin) {
+    const user = await User.findOne({ mobileNumber });
+    if (!mobileNumber) {
       return res.status(400).json({ message: "Admin not found" });
     }
 
+    //checks is the user have admin login.
+    if (!user.mobileNumber === process.env.ADMIN_NUMBER) {
+      return res.status().json({
+        message:"Access denied, only admin can access."
+      })
+
+    }
+
     // Compare password
-    const isMatch = await bcrypt.compare(password, admin.password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    // Create JWT token
-    const token = jwt.sign(
-      { id: admin._id, role: "admin" },
-      process.env.JWT_SECRET || "SECRET_KEY",
-      { expiresIn: "1h" }
-    );
+    // If login is successful, return a token
+    res.status(200).json({
+        status: 'success',
+        message: 'User logged in successfully',
+        data: generateAccessToken(existingUser.mobileNumber),
+    });
 
     res.status(200).json({
       status: "success",

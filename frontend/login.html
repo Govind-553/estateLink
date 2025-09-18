@@ -148,7 +148,6 @@
   </style>
 </head>
 <body>
-
   <main>
     <div class="main-container">
       <!-- Left Side -->
@@ -159,7 +158,6 @@
           <p>Login with your credentials to access the dashboard.</p>
         </div>
       </div>
-
       <!-- Right Side -->
       <div class="right-panel">
         <div class="form-container">
@@ -169,7 +167,7 @@
               <label for="mobile">Mobile Number</label>
               <div class="phone-input">
                 <span>+91</span>
-                <input type="tel" id="mobile" name="mobile" placeholder="Enter your mobile number" required pattern="^[6-9]\d{9}$">
+                <input type="tel" id="mobileNumber" name="mobile" placeholder="Enter your mobile number" required pattern="^[6-9]\d{9}$">
               </div>
             </div>
             <div class="input-group">
@@ -179,18 +177,17 @@
                 <i class="fa-solid fa-eye-slash toggle-password"></i>
               </div>
             </div>
+            <div id="popupMessage"></div>
             <button type="submit" class="btn">Login</button>
           </form>
         </div>
       </div>
     </div>
   </main>
-
-  <script>
-  
-document.addEventListener('DOMContentLoaded', () => {
-  const togglePassword = document.querySelector('.toggle-password');
-  togglePassword.addEventListener('click', () => {
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const togglePassword = document.querySelector('.toggle-password');
+    togglePassword.addEventListener('click', () => {
     const passwordInput = document.getElementById('password');
     const type = passwordInput.type === 'password' ? 'text' : 'password';
     passwordInput.type = type;
@@ -198,36 +195,36 @@ document.addEventListener('DOMContentLoaded', () => {
     togglePassword.classList.toggle('fa-eye-slash');
   });
 
-  document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+  const adminLoginForm = document.getElementById('loginForm');
+    adminLoginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-    const mobile = document.getElementById('mobile').value;
-    const password = document.getElementById('password').value;
+    const mobile = document.getElementById('mobileNumber').value;
+    const pass = document.getElementById('password').value;
 
     try {
-      const res = await fetch("http://localhost:3000/api/admins/login", {
+      const response = await fetch("http://localhost:3000/api/users/admin-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mobileNumber: mobile, password })
+        body: JSON.stringify({ mobileNumber: "+91" + mobile, password: pass })
       });
 
-      const data = await res.json();
+      const data = await response.json();
 
-      if (res.ok && data.token) {
+      if (response.ok && data.token) {
         // Save JWT in sessionStorage
         sessionStorage.setItem("token", data.token);
-        alert("Login successful! Redirecting...");
-        window.location.href = "admin-dashboard.html";
+        alert("Admin Logged-in successfully!");
+        window.location.href = "../frontend/admin-dashboard.html";
       } else {
         alert(data.message || "Invalid login credentials");
       }
-    } catch (err) {
-      console.error("Error:", err);
+    } catch (error) {
+      console.error("Error:" + error.message);
       alert("Something went wrong. Please try again.");
     }
   });
 });
-
-  </script>
+</script>
 </body>
 </html>

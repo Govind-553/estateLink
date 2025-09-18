@@ -172,41 +172,50 @@ export const resetPassword = async (req, res) => {
     }
 };
 
-//Route 5 - verify-otp
-export const verifyOtp = async (req, res) => {
-    const { mobileNumber, otp, verificationId } = req.body;
-
-    if (!mobileNumber || !otp || !verificationId) {
-        return res.status(400).json({ msg: 'Please enter all fields.' });
-    }
-
+// Route 5 - Admin Login
+export const adminLogin = async (req, res) => {
+    const { mobileNumber, password } = req.body;
     try {
-        // TODO: integrate Firebase or other OTP verification
-        const user = pendingUsers[mobileNumber];
+        // Check if admin exists
+        const user = await User.findOne({ mobileNumber });
         if (!user) {
-            return res.status(400).json({ error: "No pending user found" });
+          return res.status(400).json({ message: "Admin not found" });
+
         }
-
-        const token = jwt.sign({ mobileNumber }, "SECRET_KEY", { expiresIn: "1h" });
-
-        delete pendingUsers[mobileNumber]; // Remove from pendingUsers
-
-        res.status(201).json({
+    
+        //checks is the user have admin login.
+        const adminNumber = process.env.ADMIN_NUMBER;
+        const phoneNumber = user.mobileNumber;
+        if (String(phoneNumber) !== String(adminNumber)) {
+          return res.status(403).json({
+            message:"Access denied, only admin can access."
+          })
+        }
+    
+        // Compare password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+          return res.status(400).json({ message: "Invalid password" });
+        }
+    
+        // If login is successful, return a token
+        res.status(200).json({
             status: 'success',
-            message: 'OTP verified, user registered',
+            message: 'Admin logged in successfully',
+            token: generateAccessToken(user.mobileNumber),
             data: {
-                fullName: user.fullName,
-                contact: user.mobileNumber,
-                token
+                fullName:user.fullName,
+                mobileNumber: user.mobileNumber
             }
         });
     } catch (error) {
-        console.error('Error verifying OTP:', error);
-        res.status(500).json({ msg: 'Server error. Please try again later.' });
+        console.error("Login Error:", error);
+        res.status(500).json({ message: "Server error: " + error.message });
     }
-};
+}
 
-//Route 6 - logout User
+
+//Route 9 - logout User
 export const logout = async (req, res) => {
     try {
         res.clearCookie("refreshToken", {
@@ -224,3 +233,4 @@ export const logout = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+

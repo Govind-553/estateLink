@@ -1,7 +1,7 @@
 // Import required packages
 import express from "express";
 const router = express.Router(); 
-import {registerUser, forgotPassword, loginUser, verifyOtp,resetPassword }  from "../controllers/userController.js";
+import {registerUser, forgotPassword, loginUser, resetPassword, adminLogin, logout }  from "../controllers/userController.js";
 
 // Import the User model
 import User from "../models/User.js";
@@ -15,22 +15,16 @@ router.post("/login",loginUser);
 //Route 3 - Forgot password (password reset request)
 router.post("/forgot", forgotPassword);
 
-//Round 9 - forgot password (verify OTP and reset password)
+//Round 4 - forgot password (verify OTP and reset password)
 router.post("/reset-password", resetPassword);
 
-//Route 4 - Resend OTP
-router.post("/resend-otp", (req, res) => {
-    const { mobileNumber } = req.body;
-    // Logic to generate and send OTP
-});
+//Route 5 - Admin login 
+router.post("/admin-login", adminLogin);
 
-//Route 5 - Verify OTP
-router.post("/verify-otp", verifyOtp);
-
-//Route 7 - Generate the new access token using refressToken.
+//Route 6 - Generate the new access token using refressToken.
 
 
-// Route 6 - Get all users
+// Route 7 - Get all users
 router.get('/all', async (req, res) => {
     try {
         const users = await User.find();
@@ -41,7 +35,7 @@ router.get('/all', async (req, res) => {
     }
 });
 
-// Route 7 - Get user by contact
+// Route 8 - Get user by contact
 router.get('/contact/:mobileNumber', async (req, res) => {
     const { mobileNumber } = req.params;
     try {
@@ -56,16 +50,7 @@ router.get('/contact/:mobileNumber', async (req, res) => {
     }
 });
 
-//Route 8 - Logout user.
-router.post("/logout", (req, res) => {
-    // Clear the user's session or token
-    req.session.destroy((err) => {
-        if (err) {
-            console.error(err.message);
-            return res.status(500).send('Server Error');
-        }
-        res.json({ message: "User logged out successfully." });
-    });
-});
+//Route 9 - Logout user.
+router.post("/logout", logout);
 
 export default router;

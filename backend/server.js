@@ -23,7 +23,6 @@ app.use(cookieParser()); // Optional if you're handling cookies
 app.use('/api/users', userRoutes);
 app.use('/api/rentflats', rentRoutes);
 app.use('/api/sellflats', sellRoutes);
-app.use("/api/admins", adminRoutes);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
