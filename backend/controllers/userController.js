@@ -214,6 +214,16 @@ export const adminLogin = async (req, res) => {
     }
 }
 
+//Route 7 - Get All Users
+export const getAllUsers = async (req, res) => {
+try {
+        const users = await User.find();
+        res.json(users);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+};
 
 //Route 9 - logout User
 export const logout = async (req, res) => {

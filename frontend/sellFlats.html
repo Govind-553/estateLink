@@ -357,7 +357,14 @@ document.addEventListener('DOMContentLoaded', function() {
         propertiesBody.innerHTML = '';
         data.forEach(prop => {
             const row = propertiesBody.insertRow();
-            row.innerHTML = `<td>${prop.location || ''}</td><td>${prop.propertyType || ''}</td><td>${prop.price || ''}</td><td>${prop.userName || ''}</td><td>${prop.contact || ''}</td><td>${new Date(prop.date).toLocaleDateString()}</td><td>${prop.ownershipType || ''}</td><td class="actions-cell"><button class="action-btn edit-btn" data-id="${prop.id}"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" data-id="${prop.id}"><i class="fas fa-trash-alt"></i></button></td>`;
+            row.innerHTML = `<td>${prop.location || ''}</td>
+            <td>${prop.propertyType || ''}</td>
+            <td>${prop.price || ''}</td><td>${prop.userName || ''}</td>
+            <td>${prop.contact || ''}</td>
+            <td>${new Date(prop.date).toLocaleDateString()}</td>
+            <td>${prop.ownershipType || ''}</td>
+            <td class="actions-cell"><button class="action-btn edit-btn" data-id="${prop.id}"><i class="fas fa-edit"></i></button>
+                <button class="action-btn delete-btn" data-id="${prop.id}"><i class="fas fa-trash-alt"></i></button></td>`;
         });
     }
 

@@ -23,6 +23,16 @@ const UserSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    status: {
+        type: String,
+        enum: ['Active', 'Inactive'],
+        default: 'Inactive',
+    },
+    type: {
+        type: String,
+        enum: ['Owner', 'Agent'],
+        default: 'Agent',
+    }
 });
 
 // Create and export the User model

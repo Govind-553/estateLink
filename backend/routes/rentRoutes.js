@@ -5,7 +5,6 @@ import {
     updateRentListingById, 
     deleteRentListingById 
 } from "../controllers/RentController.js";
-// Comment out or remove these imports for now
 import { verifyAccessToken } from "../middleware/userAuth.js";
 import { checkAdminNumber } from "../middleware/checkAdminNumber.js";
 
