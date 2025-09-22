@@ -912,6 +912,7 @@
         const tableMessage = document.getElementById('tableMessage');
         const priceInput = document.getElementById('priceInput');
         const propertiesTable = document.getElementById('propertiesTable');
+        let filteredData = [...propertiesData];
         const BaseUrl = 'http://localhost:3000/api/sellflats';
 
                 function renderProperties(data) {
@@ -1023,16 +1024,6 @@ async function fetchProperties() {
             dropdowns.forEach(d => d.classList.remove('active'));
         });
 
-        searchBtn.addEventListener('click', () => {
-            applyFilters();
-            if (propertiesData.length > 0) {
-                showTable();
-            } else {
-                hideTable();
-                showTableMessage("No properties found. Please try different filters.");
-            }
-        });
-
         clearAllBtn.addEventListener('click', () => {
             clearAllFilters();
             hideTable();
@@ -1083,6 +1074,22 @@ async function fetchProperties() {
             }
         }
 
+        searchBtn.addEventListener('click', () => {
+    if (propertiesData.length > 0) {
+        applyFilters();
+        if (filteredData.length > 0) {
+            renderProperties(filteredData);
+            showTable();
+        } else {
+            hideTable();
+            showTableMessage("No 1properties found. Please try different filters.");
+        }
+    } else {
+        hideTable();
+        showTableMessage("1No properties found. Please try different filters.");
+    }
+});
+
         function clearAllFilters() {
             filters = {};
             
@@ -1098,7 +1105,7 @@ async function fetchProperties() {
         }
 
                function applyFilters() {
-            let filteredData = [...propertiesData];
+            filteredData = [...propertiesData];
         
             const filterLocation = filters.location ? filters.location.value.toLowerCase() : '';
             const filterType = filters.propertyType ? filters.propertyType.value.toLowerCase() : '';
