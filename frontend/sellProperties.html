@@ -1070,7 +1070,14 @@
         const togglePassword = document.getElementById('togglePassword');
     const profilePasswordInput = document.getElementById('profilePassword');
     const logoutBtn = document.getElementById('logoutBtn');
-    const userData = JSON.parse(localStorage.getItem("admin"));
+    const userData = JSON.parse(localStorage.getItem("user"));
+
+     //check the user data is present or not
+    if (userData) {
+        document.getElementById("profileName").value = userData.fullName;
+        document.getElementById("profileMobile").value = userData.mobileNumber;
+    // Password field can be left blank or masked (don’t store passwords in frontend!)
+    }
     
     // Panels
     const profilePanel = document.getElementById('profilePanel');
@@ -1099,18 +1106,18 @@
     overlay.addEventListener('click', closeAllPanels);
     
     // Toggle Password Visibility
-    togglePassword.addEventListener('click', () => {
-        const type = profilePasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        profilePasswordInput.setAttribute('type', type);
-        togglePassword.classList.toggle('fa-eye');
-        togglePassword.classList.toggle('fa-eye-slash');
-    });
+    //togglePassword.addEventListener('click', () => {
+    //    const type = profilePasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    //    profilePasswordInput.setAttribute('type', type);
+    //    togglePassword.classList.toggle('fa-eye');
+    //    togglePassword.classList.toggle('fa-eye-slash');
+    //});
 
     // Logout Button
     document.getElementById("logoutBtn").addEventListener("click", () => {
         localStorage.removeItem("token");
         localStorage.removeItem("admin");
-        window.location.href = "login-register.html"; // redirect to login page
+        window.location.href = "sellLogin.html"; // redirect to login page
 });
 
                 function renderProperties(data) {
@@ -1131,7 +1138,7 @@
         }
 
 async function fetchProperties() {
-    const token = localStorage.getItem("userToken");
+    const token = localStorage.getItem("token");
     try {
         const response = await fetch(`${BaseUrl}/all-public`, { 
             headers: { 

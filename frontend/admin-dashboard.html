@@ -1038,8 +1038,8 @@ async function fetchUsers() {
             return;
         }
         data.forEach((user) => {
-            const statusText = user.status ? user.status : "Unknown";
-            const statusClass = `status-${user.status ? user.status.toLowerCase() : 'unknown'}`;
+            const statusText = user.subscriptionStatus ? user.subscriptionStatus : "Unknown";
+            const statusClass = `status-${user.subscriptionStatus ? user.subscriptionStatus.toLowerCase() : 'unknown'}`;
             //const registrationDate = (user.registrationDate || "N/A").toLocaleDateString();
             const row = document.createElement('tr');
             row.innerHTML =  `
@@ -1062,8 +1062,8 @@ async function fetchUsers() {
         document.getElementById('totalUsers').textContent = data.length;
         document.getElementById('agentUsers').textContent = data.filter(u => u.type === 'Agent').length;
         document.getElementById('ownerUsers').textContent = data.filter(u => u.type === 'Owner').length;
-        document.getElementById('activeUsers').textContent = data.filter(u => u.status === 'Active').length;
-        document.getElementById('inactiveUsers').textContent = data.filter(u => u.status === 'Inactive').length;
+        document.getElementById('activeUsers').textContent = data.filter(u => u.subscriptionStatus === 'Active').length;
+        document.getElementById('inactiveUsers').textContent = data.filter(u => u.subscriptionStatus === 'Inactive').length;
     }
     
     function checkOrientation() {
@@ -1116,8 +1116,8 @@ async function fetchUsers() {
         if (currentFilters.mobile) {
             filteredData = filteredData.filter(user => String(user.mobileNumber).includes(currentFilters.mobile));
         }
-        if (currentFilters.status) {
-            filteredData = filteredData.filter(user => user.status.toLowerCase() === currentFilters.status.toLowerCase());
+        if (currentFilters.subscriptionStatus) {
+            filteredData = filteredData.filter(user => user.subscriptionStatus.toLowerCase() === currentFilters.subscriptionStatus.toLowerCase());
         }
         
         renderTable(filteredData);
@@ -1134,7 +1134,7 @@ async function fetchUsers() {
         if (e.target.classList.contains('dropdown-option')) {
             const value = e.target.dataset.value;
             statusDropdown.querySelector('.dropdown-btn span').textContent = e.target.textContent;
-            currentFilters.status = value;
+            currentFilters.subscriptionStatus = value;
             filterAndRender();
         }
         statusDropdown.classList.toggle('active');

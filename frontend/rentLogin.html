@@ -860,6 +860,8 @@ if (resendOtpLink) {
 
                                 if (response.ok) {
                                     showCustomPopup("✅ " + data.message);
+                                    localStorage.setItem("token", data.token);
+                                    localStorage.setItem("user", JSON.stringify(data.data));
                                     window.location.href = "../frontend/rentProperties.html";
                                 } else {
                                     showCustomPopup("❌ " + data.message);

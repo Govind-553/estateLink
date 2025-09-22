@@ -10,8 +10,8 @@ import {
   adminLogin, 
   logout, 
   getAllUsers,
-  createSubscription,
-  getSubscriptionStatus
+  //createSubscription,
+  //getSubscriptionStatus
 } from "../controllers/userController.js";
 
 import { verifyAccessToken } from "../middleware/userAuth.js";
@@ -66,10 +66,10 @@ router.get("/contact/:mobileNumber", async (req, res) => {
  */
 
 // Route 9 - Create subscription for logged-in user
-router.post("/create-subscription", verifyAccessToken, createSubscription);
+//router.post("/create-subscription", verifyAccessToken, createSubscription);
 
 // Route 10 - Get subscription status for logged-in user
-router.get("/subscription-status", verifyAccessToken, getSubscriptionStatus);
+//router.get("/subscription-status", verifyAccessToken, getSubscriptionStatus);
 
 // Route 11 - Access premium features for subscribed users
 router.get("/premium-feature", verifyAccessToken, checkSubscription, (req, res) => {

@@ -66,7 +66,7 @@ export const loginUser = async (req, res) => {
     const { mobileNumber, password } = req.body;
     try {
         if (!mobileNumber || !password) {
-            return res.status(400).json({ msg: 'Please enter all fields.' });
+            return res.status(400).json({ message: 'Please enter all fields.' });
         }
 
         if (password.length < 6) {
@@ -110,16 +110,18 @@ export const loginUser = async (req, res) => {
         res.status(200).json({
             status: 'success',
             message: 'User logged in successfully',
-            userId: existingUser._id,
+            token: generateAccessToken(existingUser.mobileNumber),
+            data: {userId: existingUser._id,
+            fullName: existingUser.fullName,
+            mobileNumber: existingUser.mobileNumber,
             subscriptionActive: existingUser.subscriptionActive,
             subscriptionStatus: existingUser.subscriptionStatus,
             subscriptionExpiry: existingUser.subscriptionExpiry,
-            token: generateAccessToken(existingUser.mobileNumber),
+            }
         });
-
     } catch (error) {
         console.error('Error logging in user:', error);
-        res.status(500).json({ msg: 'Server error. Please try again later.' });
+        res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 };
 
