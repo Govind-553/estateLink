@@ -445,10 +445,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     dropdown.querySelector('.dropdown-btn span').textContent = `Select ${filterKey === 'flatType' ? 'Property Type' : 'Location'}`;
                     dropdown.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
                 }
-                const input = document.getElementById(filterKey);
-                if (input) input.value = '';
-                updateSelectedFilters();
-                filterAndRender();
+                // Handle text inputs (price, mobile, etc.)
+        const input = document.getElementById(filterKey);
+        if (input && (input.tagName === 'INPUT' || input.tagName === 'TEXTAREA')) {
+            input.value = '';
+        }
+
+        updateSelectedFilters();
+        filterAndRender();
             });
         });
     }

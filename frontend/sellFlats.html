@@ -253,11 +253,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(`${BASE_URL}/all`, { headers: { 'Content-Type': 'application/json', 'authorization': `Bearer ${accessToken}` } });
             if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
             const data = await response.json();
-            properties = data.sellFlatsList || [];
+            properties = data.data || [];
             filterAndRender();
         } catch (error) {
             console.error("Error fetching sell properties:", error);
-            showCustomAlert("Could not fetch listings. Please log in again.");
+            showCustomAlert("Could not fetch listings. Please log in again." + error.message);
         }
     }
 
@@ -460,7 +460,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    fetchAndRenderProperties();
+    fetchAndRenderProperties();;
 });
 </script>
 
