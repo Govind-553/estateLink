@@ -15,25 +15,31 @@ const cleanMobileNumber = (mobileString) => {
 
 // Route 1: Create a new rent listing
 export const createRentListing = async (req, res) => {
-    // ✅ CORRECTED: Destructure tenantType instead of ownershipType
     const { contact, location, propertyType, price, name, date, tenantType } = req.body || {};
 
     try {
-        // ✅ CORRECTED: Validate for tenantType
         if (!contact || !location || !propertyType || !price || !name || !date || !tenantType) {
             return res.status(400).json({ message: "All required fields must be provided." });
         }
-        
+
         const sanitizedContact = cleanMobileNumber(contact);
+
+        // ✅ Check if contact matches a registered user
+        const matchedUser = await User.findOne({ mobileNumber: sanitizedContact });
+        let finalUserName = name;
+
+        if (matchedUser) {
+            finalUserName = matchedUser.fullName; // auto use registered user's full name
+        }
 
         const newListing = new RentFlat({
             location,
             propertyType,
             price: parsePrice(price),
             contact: sanitizedContact,
-            userName: name,
+            userName: finalUserName,
             date,
-            tenantType // ✅ CORRECTED: Save tenantType
+            tenantType
         });
 
         const savedListing = await newListing.save();
@@ -41,47 +47,22 @@ export const createRentListing = async (req, res) => {
         res.status(201).json({
             message: "New flat for rent is listed successfully.",
             listing: savedListing,
+            autoFilledFromUser: !!matchedUser // to tell frontend if autofill happened
         });
 
     } catch (error) {
-         // ✅ MODIFIED: Check for the specific duplicate key error
         if (error.code === 11000) {
-            // Check if the duplicate key error is for the 'contact' field
             if (error.keyPattern && error.keyPattern.contact) {
                 return res.status(409).json({ 
                     message: "This contact number is already associated with an existing listing. Please use a different number." 
                 });
             }
         }
-
         console.error("Error creating rent listing:", error.message);
         res.status(500).json({ message: "Server error while creating rent listing." });
     }
 };
 
-// New Route: Get user details by mobile number
-export const getUserByMobileNumber = async (req, res) => {
-    try {
-        const mobileNumber = req.params.mobileNumber;
-        const user = await User.findOne({ mobileNumber: mobileNumber });
-
-        if (!user) {
-            return res.status(404).json({ message: "User not found." });
-        }
-
-        res.status(200).json({
-            message: "User found.",
-            user: {
-                fullName: user.fullName,
-                mobileNumber: user.mobileNumber
-            }
-        });
-
-    } catch (error) {
-        console.error("Error fetching user by mobile number:", error.message);
-        res.status(500).json({ message: "Server error." });
-    }
-};
 
 // Route 2: Get all rent listings
 export const getAllRentListings = async (req, res) => {
