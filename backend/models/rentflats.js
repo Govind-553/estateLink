@@ -22,7 +22,7 @@ const RentFlatSchema = new mongoose.Schema({
         required: [true, 'Mobile number is required.'],
         trim: true,
         match: [/^[0-9]{10}$/, 'Please fill a valid 10-digit mobile number.'],
-        unique: true // ✅ Ensures uniqueness at DB level
+        index: true // ✅ Index for faster lookups},
     },
     date: {
         type: Date,
@@ -36,9 +36,6 @@ const RentFlatSchema = new mongoose.Schema({
 }, { 
     timestamps: true 
 });
-
-// ✅ Explicit index for contact
-RentFlatSchema.index({ contact: 1 }, { unique: true });
 
 const RentFlat = mongoose.model('RentFlat', RentFlatSchema);
 

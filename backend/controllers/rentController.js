@@ -34,6 +34,23 @@ export const createRentListing = async (req, res) => {
             finalUserName = matchedUser.fullName;
         }
 
+
+        // 🔹 ADD DUPLICATE CHECK HERE
+        const duplicateListing = await RentFlat.findOne({
+            contact: sanitizedContact,
+            location,
+            propertyType,
+            price: parsePrice(price),
+            tenantType
+        });
+
+        if (duplicateListing) {
+            return res.status(409).json({
+                message: "A listing with the same details already exists. Please modify at least one attribute."
+            });
+        }
+        // 🔹 END DUPLICATE CHECK
+
         const newListing = new RentFlat({
             location,
             propertyType,
@@ -52,8 +69,8 @@ export const createRentListing = async (req, res) => {
             autoFilledFromUser: !!matchedUser
         });
 
-    } catch (error) {
-        if (error.code === 11000 && error.keyPattern?.contact) {
+    } catch (error) { 
+         if (error.code === 11000 && error.keyPattern?.contact) {
             return res.status(409).json({ 
                 message: "This contact number is already associated with an existing listing. Please use a different number." 
             });
