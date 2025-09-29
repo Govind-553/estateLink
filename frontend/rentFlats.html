@@ -349,6 +349,7 @@ const userNameInput = propertyForm.elements['userName'];
             } else if (res.status === 403) {
                 userNameInput.value = ""; 
                 showCustomPopup("⚠️ " + data.message); // inactive user
+                closePanel();
             } else {
                 userNameInput.value = "";
                 showCustomPopup("⚠️ " + data.message); // not found, allow manual typing
