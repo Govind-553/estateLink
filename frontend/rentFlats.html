@@ -279,7 +279,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const BASE_URL = 'http://localhost:3000/api/rentflats';
+    const BASE_URL = 'https://real-estate-project-1-lps5.onrender.com/api/rentflats';
     let properties = [];
 
     // --- Custom Modal Functionality ---
@@ -340,7 +340,7 @@ const userNameInput = propertyForm.elements['userName'];
     const contactVal = contactInput.value.trim();
     if (contactVal.length === 10) {
         try {
-            const res = await fetch(`http://localhost:3000/api/users/findByContact/${contactVal}`);
+            const res = await fetch(`https://real-estate-project-1-lps5.onrender.com/api/users/findByContact/${contactVal}`);
             const data = await res.json();
 
             if (res.ok && data.fullName) {
