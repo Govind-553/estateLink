@@ -7,19 +7,15 @@ import userRoutes from "./routes/userRoutes.js";
 import rentRoutes from "./routes/rentRoutes.js";
 import sellRoutes from "./routes/sellRoutes.js";
 import cookieParser from "cookie-parser";
-//import adminRoutes from "./routes/adminRoutes.js";
-//import { firebaseconfig } from "./controllers/firebase.js";
-//import { verifyAccessToken } from "./middleware/userAuth.js";
-//import { checkAdminNumber } from "./middleware/checkAdminNumber.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import webhookRoutes from "./routes/webhook.js";
 
 dotenv.config();
-const app = express();  // Initialize Express app
+const app = express(); // Initialize Express app
 
 app.use(cors());
 app.use(express.json());
-app.use(cookieParser()); 
+app.use(cookieParser());
 
 // Use routes
 app.use('/api/users', userRoutes);

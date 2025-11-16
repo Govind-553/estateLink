@@ -21,11 +21,10 @@ export const verifyAccessToken = (req, res, next) => {
       });
     }
 
-    // Attach user info from token to request object
+    // It expect generateAccessToken to embed { userId, mobileNumber }
     req.userId = decoded.userId;
     req.mobileNumber = decoded.mobileNumber;
 
-    // Don't re-sign token here — just verify it
     next();
   } catch (error) {
     console.error("Error in Verifying Token: ", error.message);

@@ -1,7 +1,9 @@
 import fs from 'fs';
 
-const configFilePath = './frontend/firebaseConfig.js';
+const firebaseConfigFilePath = './frontend/firebaseConfig.js';
+const razorpayConfigFilePath = './frontend/razorpayConfig.js';
 
+// 1) Firebase config
 const firebaseConfigContent = `
 export const firebaseConfig = {
   apiKey: "${process.env.PUBLIC_FIREBASE_API_KEY}",
@@ -14,6 +16,13 @@ export const firebaseConfig = {
 };
 `;
 
-fs.writeFileSync(configFilePath, firebaseConfigContent);
-
+fs.writeFileSync(firebaseConfigFilePath, firebaseConfigContent);
 console.log('✅ Successfully created firebaseConfig.js for deployment inside /frontend!');
+
+// 2) Razorpay config
+const razorpayConfigContent = `
+export const RAZORPAY_KEY_ID = "${process.env.PUBLIC_RAZORPAY_KEY_ID}";
+`;
+
+fs.writeFileSync(razorpayConfigFilePath, razorpayConfigContent);
+console.log('✅ Successfully created razorpayConfig.js for deployment inside /frontend!');

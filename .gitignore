@@ -8,3 +8,4 @@ cleanupSellFlats.js
 
 # Firebase config files 
 firebaseConfig.js
+razorpayConfig.js
