@@ -118,7 +118,7 @@ export const loginUser = async (req, res) => {
 
     if (!subscriptionActive) {
       return res.status(403).json({
-        message: "Your subscription is not active or has expired. Please subscribe to continue.",
+        message: "⚠️ Your subscription is not active or has expired. Please subscribe to continue.",
         subscriptionActive: false,
         subscriptionStatus: existingUser.subscriptionStatus || "Inactive"
       });
